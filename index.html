@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Pseudos Neutres</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        button {
+            background-color: var(--accent);
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .results-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .result-item {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.95rem;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--border);
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Générateur de Pseudos</h1>
+    <p class="subtitle">Pseudonymes neutres, simples et sans style particulier.</p>
+
+    <div class="actions">
+        <button onclick="generatePseudos()">Générer une liste</button>
+    </div>
+
+    <ul class="results-list" id="results"></ul>
+</div>
+
+<script>
+    const syllablesStart = ["val", "cor", "lor", "mar", "syl", "tar", "ren", "kal", "ber", "nol", "dor", "ter", "fal", "morn", "sylv", "voren", "karel", "tarn"];
+    const syllablesEnd = ["is", "ek", "om", "an", "ov", "us", "ar", "et", "on", "in", "el", "os", "en", "or", "al"];
+
+    function getRandomItem(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function generateSinglePseudo() {
+        const start = getRandomItem(syllablesStart);
+        const end = getRandomItem(syllablesEnd);
+        return capitalize(start + end);
+    }
+
+    function generatePseudos() {
+        const resultsContainer = document.getElementById("results");
+        resultsContainer.innerHTML = "";
+
+        for (let i = 0; i < 5; i++) {
+            const pseudo = generateSinglePseudo();
+            const li = document.createElement("li");
+            li.className = "result-item";
+            li.innerHTML = `
+                <span>${pseudo}</span>
+                <button class="copy-btn" onclick="copyToClipboard('${pseudo}', this)">Copier</button>
+            `;
+            resultsContainer.appendChild(li);
+        }
+    }
+
+    function copyToClipboard(text, btnElement) {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "Copié !";
+            setTimeout(() => {
+                btnElement.innerText = originalText;
+            }, 1200);
+        });
+    }
+
+    // Génération initiale au chargement
+    generatePseudos();
+</script>
+
+</body>
+</html>
